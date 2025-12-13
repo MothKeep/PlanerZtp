@@ -1,0 +1,23 @@
+1. Builder:
+Proste tworzenie przepisów, dodawanie kolejnych pól (nazwa, lista składników, kategoria...) krok po kroku
+Rozbudowywanie planu o kolejno posiłki 
+
+2. Prototype:
+Kopiowanie posiłków do modyfikacji, baza typu posiłku (kolacja, obiad, śniadanie etc)
+Kopiowanie rozplanowanego tygodnia / dnia
+
+3. Composite:
+Prosta reprezentacja hierarchi (głównie lista zakupów (produkt > kategoria > sklep?)) (Deser > ciasto > czekoladowe > murzynek)
+Plan posiłków złożony na posiłek > dzień > tydzień > so on
+
+4. Decorator:
+Dodanie opcji liczenia makro, kalorii etc, do podstawowych przepisów.
+
+
+5. Command:
+Dodawanie / edycja przepisów, usunięcie posiłku, cofnięcie ostatnich n - operacji (ctrl z po przypadkowym usunięciu) 
+
+6. Observer:
+Automatyczne aktualizowanie listy zakupów, licznika kalorii 
+
+
