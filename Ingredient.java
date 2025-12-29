@@ -69,8 +69,8 @@ public class Ingredient{
     }
   }
 
-  public int getCalories() return calories;
-  public float getProtein() return protein;
-  public float getFat() return fat;
-  public float getCarbs() return carbs;
+  public int getCalories(){return calories;}
+  public float getProtein(){return protein;}
+  public float getFat(){return fat;}
+  public float getCarbs(){return carbs;}
 }

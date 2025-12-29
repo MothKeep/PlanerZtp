@@ -32,7 +32,7 @@ class Meal{
   }
 }
 
-public interface MealComponent extends Cloneable{
+interface MealComponent extends Cloneable{
   void recalculateNutrition();
 
   int getTotalCalories();
@@ -99,23 +99,23 @@ class DayPlan implements MealComponent{
   }
   
   @Override
-  public int getTotalCalories() return totalCalories;
+  public int getTotalCalories(){return totalCalories;}
 
   @Override
-  public int getTotalProtein() return totalProtein;
+  public float getTotalProtein(){return totalProtein;}
 
   @Override
-  public int getTotalFat() return totalFat;
+  public float getTotalFat(){return totalFat;}
  
   @Override
-  public int getTotalCarbs() return totalCarbs;
+  public float getTotalCarbs(){return totalCarbs;}
   //==================================================
   
   @Override
-  public void attach(Observer observer) observers.add(observer);
+  public void attach(Observer observer){observers.add(observer);}
 
   @Override
-  public void detach(Observer observer) observers.remove(observer);
+  public void detach(Observer observer){observers.remove(observer);}
 
   @Override
   public void notifyObservers(){
@@ -154,14 +154,14 @@ class MealPlan implements MealComponent{
     notifyObservers();
   }
 
-  public removeComponent(MealComponent component){
+  public void removeComponent(MealComponent component){
     components.remove(component);
     recalculateNutrition();
     notifyObservers();
   }
 
   public List<MealComponent> getComponents(){
-    return Collections.unmodifiabeList(components);
+    return Collections.unmodifiableList(components);
   }
   //==================================================
 
@@ -183,23 +183,23 @@ class MealPlan implements MealComponent{
   }
 
   @Override
-  public int getTotalCalories() return totalCalories;
+  public int getTotalCalories(){return totalCalories;}
 
   @Override
-  public float getTotalProtein() return totalProtein;
+  public float getTotalProtein(){return totalProtein;}
  
   @Override
-  public float getTotalFat() return totalFat;
+  public float getTotalFat(){return totalFat;}
   
   @Override
-  public float getTotalCarbs() return totalCarbs;
+  public float getTotalCarbs(){return totalCarbs;}
   //==================================================
   
   @Override
-  public void attach(Observer observer) observers.add(observer);
+  public void attach(Observer observer){observers.add(observer);}
 
   @Override
-  public void detach(Observer observer) observers.remove(observer);
+  public void detach(Observer observer){observers.remove(observer);}
 
   @Override
   public void notifyObservers(){
