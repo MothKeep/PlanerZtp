@@ -25,7 +25,6 @@ public class Ingredient{
     this.type = builder.type;
   }
 
-
   public static class IngredientBuilder{
 
     private String name;
@@ -69,4 +68,9 @@ public class Ingredient{
       return new Ingredient(this);
     }
   }
+
+  public int getCalories() return calories;
+  public float getProtein() return protein;
+  public float getFat() return fat;
+  public float getCarbs() return carbs;
 }

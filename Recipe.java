@@ -46,7 +46,27 @@ public class Recipe implements IRecipe{
 
   @Override
   public void recalculateNutrition(){
-    //tu  macie coś zrobić
+    totalCalories = 0;
+    totalProtein = 0;
+    totalFat = 0;
+    totalCarbs = 0;
+
+    for(Map.Entry<Ingredient, Integer> entry : ingredients.entrySet()){
+      Ingredient ingredient = entry.getKey();
+      int amount = entry.getValue();
+
+      totalCalories += ingredient.getCalories() * amount;
+      totalProtein += ingredient.getProtein() * amount;
+      totalFat += ingredient.getFat() * amount;
+      totalCarbs += ingredient.getCarbs() * amount;
+    }
+
+    if(servings > 1){
+      totalCalories /= servings;
+      totalProtein /= servings;
+      totalFat /= servings;
+      totalCarbs /= servings;
+    }
   }
 
   @Override
