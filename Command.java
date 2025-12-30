@@ -1,10 +1,12 @@
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 public interface Command
 {
     void execute();
+    void undo();
 }
 
 class RecipeManager
@@ -18,9 +20,15 @@ class RecipeManager
         System.out.println("Added recipe: " + recipe);
     }
 
-    public void editRecipe(Recipe recipe)
+    public void editRecipe(Recipe oldRecipe, Recipe newRecipe)
     {
-        System.out.println("Edited recipe: " + recipe);
+        int index = recipes.indexOf(oldRecipe);
+
+        if (index != -1)
+        {
+            recipes.set(index, newRecipe);
+            System.out.println("Edited recipe: " + oldRecipe.getName());
+        }
     }
 
     public void deleteRecipe(Recipe recipe)
@@ -96,22 +104,50 @@ class AddRecipeCommand implements Command
     {
         recipeManager.addRecipe(recipe);
     }
+
+    public void undo()
+    {
+        recipeManager.deleteRecipe(recipe);
+    }
 }
 
 class EditRecipeCommand implements Command
 {
     private final RecipeManager recipeManager;
-    private final Recipe recipe;
+    private final Recipe newRecipe;
+    private Recipe oldRecipe;
 
-    public EditRecipeCommand(RecipeManager recipeManager, Recipe recipe)
+    public EditRecipeCommand(RecipeManager recipeManager, Recipe newRecipe)
     {
         this.recipeManager = recipeManager;
-        this.recipe = recipe;
+        this.newRecipe = newRecipe;
     }
 
     public void execute()
     {
-        recipeManager.editRecipe(recipe);
+        oldRecipe = null;
+
+        for (Recipe recipe : recipeManager.getRecipes())
+        {
+            if (recipe.getName().equals(newRecipe.getName()))
+            {
+                oldRecipe = recipe;
+                break;
+            }
+        }
+
+        if (oldRecipe != null)
+        {
+            recipeManager.editRecipe(oldRecipe, newRecipe);
+        }
+    }
+
+    public void undo()
+    {
+        if (oldRecipe != null)
+        {
+            recipeManager.editRecipe(newRecipe, oldRecipe);
+        }
     }
 }
 
@@ -130,6 +166,11 @@ class DeleteRecipeCommand implements Command
     {
         recipeManager.deleteRecipe(recipe);
     }
+
+    public void undo()
+    {
+        recipeManager.addRecipe(recipe);
+    }
 }
 
 class ImportRecipesCommand implements Command
@@ -146,6 +187,11 @@ class ImportRecipesCommand implements Command
     public void execute()
     {
         recipeManager.importRecipes(file);
+    }
+
+    public void undo()
+    {
+
     }
 }
 
@@ -164,23 +210,34 @@ class ExportRecipesCommand implements  Command
     {
         recipeManager.exportRecipes(file);
     }
+
+    public void undo()
+    {
+
+    }
 }
 
 class CommandController
 {
-    private final List<Command> commandQueue = new ArrayList<>();
+    private final Stack<Command> history = new Stack<>();
 
-    public void addCommand(Command command)
+    public void executeCommand(Command command)
     {
-        commandQueue.add(command);
+        command.execute();
+        history.push(command);
     }
 
-    public void executeCommands()
+    public void undoLast(int n)
     {
-        for (Command command : commandQueue)
+        for (int i = 0; i < n && !history.isEmpty(); i++)
         {
-            command.execute();
+            Command command = history.pop();
+            command.undo();
         }
-        commandQueue.clear();
+    }
+
+    public void undo()
+    {
+        undoLast(1);
     }
 }
