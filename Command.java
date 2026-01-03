@@ -213,7 +213,19 @@ class ExportRecipesCommand implements  Command
 
     public void undo()
     {
+        File exportedFile = new File(file);
 
+        if (exportedFile.exists())
+        {
+            if (exportedFile.delete())
+            {
+                System.out.println("Export undone, file deleted: " + file);
+            }
+            else
+            {
+                System.err.println("Failed to delete exported file: " + file);
+            }
+        }
     }
 }
 
