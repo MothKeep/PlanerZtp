@@ -1,3 +1,5 @@
+import java.lang;
+
 enum IngredientType{
   DAIRY,
   VEGETABLE,
@@ -73,4 +75,40 @@ public class Ingredient{
   public float getProtein(){return protein;}
   public float getFat(){return fat;}
   public float getCarbs(){return carbs;}
+
+  public String toString(){
+    StringBuilder sb = new StringBuilder();
+    sb.append("Nazwa produktu: " + name + "\n");
+    sb.append("Kalorie: " + calories.toString() + "\n");
+    sb.append("Białka: " + protein.toString() + "\n");
+    sb.append("Tłuszcze: " + fat.toString() + "\n");
+    sb.append("Węglowodany: " + carbs.toString() + "\n");
+    
+    String typ;
+    switch (type) {
+      case DAIRY:
+        typ = "Nabiał";
+        break;
+      case VEGETABLE:
+        typ = "Warzywo";
+        break;
+      case FRUIT:
+        typ = "Owoc";
+        break;
+      case MEAT:
+        typ = "Mięso";
+        break;
+      case GRAIN:
+        typ = "Zbożowe";
+        break;
+      case OTHER:
+        typ = "Inne";
+        break;
+      default:
+        break;
+    }
+    
+    sb.append("Typ produktu: " + typ + "\n");
+    return sb.toString();
+  }
 }
