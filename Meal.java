@@ -1,4 +1,6 @@
 import java.util.*;
+import java.lang;
+import java.time.LocalDate;
 
 enum MealType{
   BREAKFAST,
@@ -30,8 +32,67 @@ class Meal{
   public MealType getMealType(){
     return mealType;
   }
-}
 
+  public String toString(){
+    StringBuilder sb = new StringBuilder();
+    sb.append(margin + "Nazwa: " + recipe.getName() + "\n");
+    
+    String typ;
+    switch (mealType){
+      case BREAKFAST:
+        typ = "Śniadanie";
+        break;
+      case LUNCH:
+        typ = "Drugie śniadanie";
+        break;
+      case DINNER:
+        typ = "Obiad";
+        break;
+      case SNACK:
+        typ = "Przekąska";
+      case SUPPER:
+        typ = "Kolacja";
+        break;
+      
+      default:
+        break;
+    }
+    sb.append(margin + "Typ posiłku: " + typ + "\n");
+    sb.append(margin + "| Kalorie: " + recipe.getTotalCalories() + "\n");
+    sb.append(margin + "| Białka: " + recipe.getTotalProtein() + "\n");
+    sb.append(margin + "| Tłuszcze: " + recipe.getTotalFat() + "\n");
+    sb.append(margin + "|_Węglowodany: " + recipe.getTotalCarbs() + "\n");
+    
+    return sb.toString();
+  }
+
+  public String toStringComp(String margin = ""){
+    StringBuilder sb = new StringBuilder();
+    sb.append(margin + "Nazwa: " + recipe.getName() + "\n");
+    
+    String typ;
+    switch (mealType){
+      case BREAKFAST:
+        typ = "Śniadanie";
+        break;
+      case LUNCH:
+        typ = "Drugie śniadanie";
+        break;
+      case DINNER:
+        typ = "Obiad";
+        break;
+      case SNACK:
+        typ = "Przekąska";
+      case SUPPER:
+        typ = "Kolacja";
+        break;
+      default:
+        break;
+    }
+    sb.append(margin + "Typ posiłku: " + typ + "\n");
+    return sb.toString();
+  }
+}
 interface MealComponent extends Cloneable{
   void recalculateNutrition();
 
@@ -48,8 +109,8 @@ interface MealComponent extends Cloneable{
 }
 
 class DayPlan implements MealComponent{
-  private Date date;
-  private Map<String, Meal> meals = new HashMap<>();
+  private LocalDate date;
+  private Map<String, Meal> meals = new HashMap<>(); //string - key - godzina
 
   private int totalCalories;
   private float totalProtein;
@@ -58,7 +119,7 @@ class DayPlan implements MealComponent{
 
   private List<Observer> observers = new ArrayList<>();
 
-  public DayPlan(Date date){
+  public DayPlan(LocalDate date){
     this.date = date;
   }
   //==================================================
@@ -78,7 +139,7 @@ class DayPlan implements MealComponent{
     return Collections.unmodifiableMap(meals);
   }
 
-  public Date getDate(){
+  public LocalDate getDate(){
     return date;
   }
   //==================================================
@@ -120,13 +181,13 @@ class DayPlan implements MealComponent{
   @Override
   public void notifyObservers(){
     for(Observer observer : observers){
-      observer.update(); //Tomaszek 
+      observer.update(); 
     }
   } 
   //==================================================
   @Override
   public MealComponent clone(){
-    DayPlan copy = new DayPlan((Date) date.clone());
+    DayPlan copy = new DayPlan((LocalDate) date.clone());
 
     for(Map.Entry<String,Meal> entry : meals.entrySet()){
       copy.meals.put(entry.getKey(), entry.getValue());
@@ -134,6 +195,24 @@ class DayPlan implements MealComponent{
 
     copy.recalculateNutrition();
     return copy;
+  }
+
+  public String toString(String margin){
+    StringBuilder sb = new StringBuilder();
+    sb.append(margin + "Dzień: " + date.toString + "\n");
+    
+    for (Meal meal : meals.values()) {
+      sb.append(meal.toStringComp(margin + "  "));
+    }
+    
+    sb.append(margin + " Makro: " + "\n");
+    sb.append(margin + "/ " + "\n");
+    sb.append(margin + "| Kalorie: " + totalCalories + "\n");
+    sb.append(margin + "| Białka: " + totalProtein + "\n");
+    sb.append(margin + "| Tłuszcze: " + totalFat + "\n");
+    sb.append(margin + "|_Węglowodany: " + totalCarbs + "\n");
+
+    return sb.toString();
   }
 } 
 
@@ -219,5 +298,13 @@ class MealPlan implements MealComponent{
 
     copy.recalculateNutrition();
     return copy;
+  }
+
+  public String toString(String margin){
+    StringBuilder sb = new StringBuilder();
+    for (MealComponent component : components){
+      sb.append(margin + component.toString("  "));
+    }
+    return sb.toString();
   }
 }
