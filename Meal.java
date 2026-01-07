@@ -187,7 +187,7 @@ class DayPlan implements MealComponent{
   //==================================================
   @Override
   public MealComponent clone(){
-    DayPlan copy = new DayPlan((LocalDate) date.clone());
+    DayPlan copy = new DayPlan((LocalDate) date);
 
     for(Map.Entry<String,Meal> entry : meals.entrySet()){
       copy.meals.put(entry.getKey(), entry.getValue());
@@ -199,7 +199,7 @@ class DayPlan implements MealComponent{
 
   public String toString(String margin){
     StringBuilder sb = new StringBuilder();
-    sb.append(margin + "Dzień: " + date.toString + "\n");
+    sb.append(margin + "Dzień: " + date.toString() + "\n");
     
     for (Meal meal : meals.values()) {
       sb.append(meal.toStringComp(margin + "  "));
