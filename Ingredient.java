@@ -69,6 +69,7 @@ public class Ingredient{
     }
   }
 
+  public String getName(){return name;} ///////////////
   public int getCalories(){return calories;}
   public float getProtein(){return protein;}
   public float getFat(){return fat;}

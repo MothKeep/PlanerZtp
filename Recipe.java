@@ -1,6 +1,7 @@
-import java.util.Map;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 interface IRecipe{
 
@@ -13,6 +14,7 @@ interface IRecipe{
   float getTotalFat();
   float getTotalCarbs();
   int getServings();
+  Map<Ingredient, Integer> getIngredients();
 }
 
 public class Recipe implements IRecipe{
@@ -87,6 +89,13 @@ public class Recipe implements IRecipe{
   @Override 
   public int getServings() {return servings;}
 
+///////////////////////// Ksawier tycał
+  @Override
+  public Map<Ingredient, Integer> getIngredients() {
+    return Collections.unmodifiableMap(ingredients);
+  }
+///////////////////////////
+
   public static class RecipeBuilder{
     private String name;
     private Map<Ingredient, Integer> ingredients = new HashMap<>();
@@ -152,6 +161,13 @@ abstract class RecipeDecorator implements IRecipe{
 
   @Override
   public int getServings() {return wrappedRecipe.getServings();}
+
+/////////////////////////////// Ksawier tycał
+  @Override
+  public Map<Ingredient, Integer> getIngredients() {
+    return wrappedRecipe.getIngredients();
+  }
+///////////////////////////////
 }
 
 class PreparationTimeDecorator extends RecipeDecorator{
