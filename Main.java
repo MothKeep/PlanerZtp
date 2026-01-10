@@ -1,15 +1,15 @@
 //import
-import java.util.Scanner;
-import java.util.List;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Map;
 import java.util.HashMap;
-import java.time.LocalDate;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.BufferedReader;
-import java.io.FileReader;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
 
 class AppState{
   private final MealPlan mealPlan;
@@ -87,6 +87,7 @@ public class Main{
   public static void main(String[] args){
     Command importRecipes = new ImportRecipesCommand(appState.getRecipeManager(), "ball_Recipe");
     appState.getCommandController().executeCommand(importRecipes);
+    IngredientRepository.clear();
     try (BufferedReader reader = new BufferedReader(new FileReader("ball_Ingredient"))) {
       String line;
       while ((line = reader.readLine()) != null) {
@@ -804,6 +805,7 @@ private static void showPlan() {
                                   .build();
 
         appState.addIngredient(ingredient);
+        IngredientRepository.register(ingredient);
       }
       System.out.println("Składniki zaimportowane z: " + ingredientsFile);
     } catch (Exception e) {

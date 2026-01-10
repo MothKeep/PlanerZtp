@@ -50,14 +50,32 @@ class RecipeManager
                 String name = parts[0];
                 int servings = parts.length > 1 ? Integer.parseInt(parts[1]) : 1;
 
-                Recipe recipe = new Recipe.RecipeBuilder()
+                Recipe.RecipeBuilder builder = new Recipe.RecipeBuilder()
                         .setName(name)
-                        .setServings(servings)
-                        .build();
+                        .setServings(servings);
                 
-                        recipes.add(recipe);
+                if (parts.length > 2 && !parts[2].isEmpty())
+                {
+                    String[] ingredients = parts[2].split("\\|");
+
+                    for (String ing : ingredients)
+                    {
+                        String[] ingParts = ing.split(",");
+
+                        String ingName = ingParts[0];
+                        int amount = Integer.parseInt(ingParts[1]);
+
+                        Ingredient ingredient = IngredientRepository.get(ingName);
+
+                        if (ingredient != null)
+                        {
+                            builder.addIngredient(ingredient, amount);
+                        }
+                    }
+                }
+
+                recipes.add(builder.build());
             }
-            System.out.println("Recipes imported from: " + filePath);
         }
         catch (IOException e)
         {
@@ -71,10 +89,31 @@ class RecipeManager
         {
             for (IRecipe recipe : recipes)
             {
-                writer.write(recipe.getName() + ";" + recipe.getServings());
+                StringBuilder sb = new StringBuilder();
+                sb.append(recipe.getName())
+                    .append(";")
+                    .append(recipe.getServings())
+                    .append(";");
+
+                if (recipe instanceof Recipe concreteRecipe)
+                {
+                    boolean first = true;
+                    for (var entry : concreteRecipe.getIngredients().entrySet())
+                    {
+                        if (!first) sb.append("|");
+                        first = false;
+
+                        Ingredient ing = entry.getKey();
+                        int amount = entry.getValue();
+
+                        sb.append(ing.getName())
+                            .append(",")
+                            .append(amount);
+                    }
+                }
+                writer.write(sb.toString());
                 writer.newLine();
             }
-            System.out.println("Recipes exported to: " + filePath);
         }
         catch (IOException e)
         {
