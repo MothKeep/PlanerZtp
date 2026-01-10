@@ -1,5 +1,4 @@
 import java.util.*;
-import java.lang;
 import java.time.LocalDate;
 
 enum MealType{
@@ -35,9 +34,9 @@ class Meal{
 
   public String toString(){
     StringBuilder sb = new StringBuilder();
-    sb.append(margin + "Nazwa: " + recipe.getName() + "\n");
+    sb.append("Nazwa: " + recipe.getName() + "\n");
     
-    String typ;
+    String typ="";
     switch (mealType){
       case BREAKFAST:
         typ = "Śniadanie";
@@ -57,20 +56,20 @@ class Meal{
       default:
         break;
     }
-    sb.append(margin + "Typ posiłku: " + typ + "\n");
-    sb.append(margin + "| Kalorie: " + recipe.getTotalCalories() + "\n");
-    sb.append(margin + "| Białka: " + recipe.getTotalProtein() + "\n");
-    sb.append(margin + "| Tłuszcze: " + recipe.getTotalFat() + "\n");
-    sb.append(margin + "|_Węglowodany: " + recipe.getTotalCarbs() + "\n");
+    sb.append("Typ posiłku: " + typ + "\n");
+    sb.append("| Kalorie: " + recipe.getTotalCalories() + "\n");
+    sb.append("| Białka: " + recipe.getTotalProtein() + "\n");
+    sb.append("| Tłuszcze: " + recipe.getTotalFat() + "\n");
+    sb.append("|_Węglowodany: " + recipe.getTotalCarbs() + "\n");
     
     return sb.toString();
   }
 
-  public String toStringComp(String margin = ""){
+  public String toStringComp(String margin){
     StringBuilder sb = new StringBuilder();
     sb.append(margin + "Nazwa: " + recipe.getName() + "\n");
     
-    String typ;
+    String typ="";
     switch (mealType){
       case BREAKFAST:
         typ = "Śniadanie";
@@ -104,6 +103,8 @@ interface MealComponent extends Cloneable{
   void attach(Observer observer);
   void detach(Observer observer);
   void notifyObservers();
+
+  String toString(String margin);
 
   MealComponent clone();
 }
@@ -197,6 +198,7 @@ class DayPlan implements MealComponent{
     return copy;
   }
 
+  @Override
   public String toString(String margin){
     StringBuilder sb = new StringBuilder();
     sb.append(margin + "Dzień: " + date.toString() + "\n");
@@ -300,6 +302,7 @@ class MealPlan implements MealComponent{
     return copy;
   }
 
+  @Override
   public String toString(String margin){
     StringBuilder sb = new StringBuilder();
     for (MealComponent component : components){

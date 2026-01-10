@@ -1,4 +1,3 @@
-import java.lang;
 
 enum IngredientType{
   DAIRY,
@@ -71,7 +70,7 @@ public class Ingredient{
     }
   }
 
-  public String getName(){return name;} ///////////////
+  public String getName(){return name;} 
   public int getCalories(){return calories;}
   public float getProtein(){return protein;}
   public float getFat(){return fat;}
@@ -80,12 +79,12 @@ public class Ingredient{
   public String toString(){
     StringBuilder sb = new StringBuilder();
     sb.append("Nazwa produktu: " + name + "\n");
-    sb.append("Kalorie: " + calories.toString() + "\n");
-    sb.append("Białka: " + protein.toString() + "\n");
-    sb.append("Tłuszcze: " + fat.toString() + "\n");
-    sb.append("Węglowodany: " + carbs.toString() + "\n");
+    sb.append("Kalorie: " + calories + "\n");
+    sb.append("Białka: " + protein + "\n");
+    sb.append("Tłuszcze: " + fat + "\n");
+    sb.append("Węglowodany: " + carbs + "\n");
     
-    String typ;
+    String typ="";
     switch (type) {
       case DAIRY:
         typ = "Nabiał";
