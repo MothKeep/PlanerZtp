@@ -70,6 +70,21 @@ public class Ingredient{
     }
   }
 
+  @Override
+  public boolean equals(Object obj) {
+      if (this == obj) 
+        return true;
+      if (!(obj instanceof Ingredient)) 
+        return false;
+      Ingredient that = (Ingredient) obj;
+      return name.equalsIgnoreCase(that.name);
+  }
+  
+  @Override
+  public int hashCode() {
+      return name.toLowerCase().hashCode();
+  }
+
   public String getName(){return name;} 
   public int getCalories(){return calories;}
   public float getProtein(){return protein;}
