@@ -1,3 +1,4 @@
+import java.util.Scanner;
 
 enum IngredientType{
   DAIRY,
@@ -68,6 +69,7 @@ public class Ingredient{
     public Ingredient build(){
       return new Ingredient(this);
     }
+
   }
 
   public String getName(){return name;} 
@@ -75,6 +77,7 @@ public class Ingredient{
   public float getProtein(){return protein;}
   public float getFat(){return fat;}
   public float getCarbs(){return carbs;}
+  public IngredientType getType(){return type;}
 
   public String toString(){
     StringBuilder sb = new StringBuilder();
@@ -111,4 +114,63 @@ public class Ingredient{
     sb.append("Typ produktu: " + typ + "\n");
     return sb.toString();
   }
+
+  public void edit(){
+      Scanner scanner = new Scanner(System.in);
+      boolean editing = true;
+
+      while (editing) {
+        System.out.println("\nCo chcesz zmienić?");
+        System.out.println("1 - Nazwa");
+        System.out.println("2 - Kalorie");
+        System.out.println("3 - Białko");
+        System.out.println("4 - Tłuszcze");
+        System.out.println("5 - Węglowodany");
+        System.out.println("6 - Typ");
+        System.out.println("0 - Zakończ edycję");
+        System.out.print("Twój wybór: ");
+
+        int choice = scanner.nextInt();
+        scanner.nextLine();  
+
+        switch (choice) {
+          case 1 -> {
+            System.out.print("Nowa nazwa: ");
+            this.name = scanner.nextLine();
+          }
+          case 2 -> {
+            System.out.print("Nowa liczba kalorii: ");
+            this.calories = scanner.nextInt();
+          }
+          case 3 -> {
+            System.out.print("Nowa ilość białka: ");
+            this.protein = scanner.nextFloat();
+          }
+          case 4 -> {
+            System.out.print("Nowa ilość tłuszczu: ");
+            this.fat = scanner.nextFloat();
+          }
+          case 5 -> {
+            System.out.print("Nowa ilość węglowodanów: ");
+            this.carbs = scanner.nextFloat();
+          }
+          case 6 -> {
+            System.out.println("Wybierz typ składnika:");
+            for (IngredientType t : IngredientType.values()) {
+              System.out.println(t.ordinal() + " - " + t);
+            }
+            int typeChoice = scanner.nextInt();
+            if (typeChoice >= 0 &&
+            typeChoice < IngredientType.values().length) {
+              this.type = IngredientType.values()[typeChoice];
+            } else {
+              System.out.println("Nieprawidłowy wybór typu");
+            }
+          }
+          case 0 -> editing = false;
+          default -> System.out.println("Nieprawidłowa opcja");
+        }
+      }
+
+    }
 }

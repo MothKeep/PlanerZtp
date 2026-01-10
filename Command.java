@@ -11,16 +11,15 @@ public interface Command
 
 class RecipeManager
 {
+    private final List<IRecipe> recipes = new ArrayList<>();
 
-    private final List<Recipe> recipes = new ArrayList<>();
-
-    public void addRecipe(Recipe recipe)
+    public void addRecipe(IRecipe recipe)
     {
         recipes.add(recipe);
         System.out.println("Added recipe: " + recipe);
     }
 
-    public void editRecipe(Recipe oldRecipe, Recipe newRecipe)
+    public void editRecipe(IRecipe oldRecipe, IRecipe newRecipe)
     {
         int index = recipes.indexOf(oldRecipe);
 
@@ -31,7 +30,7 @@ class RecipeManager
         }
     }
 
-    public void deleteRecipe(Recipe recipe)
+    public void deleteRecipe(IRecipe recipe)
     {
         recipes.remove(recipe);
         System.out.println("Deleted recipe: " + recipe);
@@ -70,7 +69,7 @@ class RecipeManager
     {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath)))
         {
-            for (Recipe recipe : recipes)
+            for (IRecipe recipe : recipes)
             {
                 writer.write(recipe.getName() + ";" + recipe.getServings());
                 writer.newLine();
@@ -83,18 +82,30 @@ class RecipeManager
         }
     }
 
-    public List<Recipe> getRecipes()
+    public List<IRecipe> getRecipes()
     {
         return recipes;
     }
+ 
+    public IRecipe getLastRecipe() {
+      if (recipes.isEmpty()) return null;
+      return recipes.get(recipes.size() - 1);
+    }
+
+    public void replaceLastRecipe(IRecipe newRecipe) {
+      if (!recipes.isEmpty()) {
+        recipes.set(recipes.size() - 1, newRecipe);
+      }
+    }
+
 }
 
 class AddRecipeCommand implements Command
 {
     private final RecipeManager recipeManager;
-    private final Recipe recipe;
+    private final IRecipe recipe;
 
-    public AddRecipeCommand(RecipeManager recipeManager, Recipe recipe)
+    public AddRecipeCommand(RecipeManager recipeManager, IRecipe recipe)
     {
         this.recipeManager = recipeManager;
         this.recipe = recipe;
@@ -114,47 +125,31 @@ class AddRecipeCommand implements Command
 class EditRecipeCommand implements Command
 {
     private final RecipeManager recipeManager;
-    private final Recipe newRecipe;
-    private Recipe oldRecipe;
+    private final IRecipe newRecipe;
+    private IRecipe oldRecipe;
 
-    public EditRecipeCommand(RecipeManager recipeManager, Recipe newRecipe)
+    public EditRecipeCommand(RecipeManager recipeManager, IRecipe newRecipe, IRecipe oldRecipe)
     {
         this.recipeManager = recipeManager;
         this.newRecipe = newRecipe;
+        this.oldRecipe = oldRecipe;
     }
 
     public void execute()
     {
-        oldRecipe = null;
-
-        for (Recipe recipe : recipeManager.getRecipes())
-        {
-            if (recipe.getName().equals(newRecipe.getName()))
-            {
-                oldRecipe = recipe;
-                break;
-            }
-        }
-
-        if (oldRecipe != null)
-        {
-            recipeManager.editRecipe(oldRecipe, newRecipe);
-        }
+         recipeManager.editRecipe(oldRecipe, newRecipe);
     }
 
     public void undo()
     {
-        if (oldRecipe != null)
-        {
-            recipeManager.editRecipe(newRecipe, oldRecipe);
-        }
+        recipeManager.editRecipe(newRecipe, oldRecipe);
     }
 }
 
 class DeleteRecipeCommand implements Command
 {
     private final RecipeManager recipeManager;
-    private final Recipe recipe;
+    private final IRecipe recipe;
 
     public DeleteRecipeCommand(RecipeManager recipeManager, Recipe recipe)
     {
