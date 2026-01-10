@@ -773,13 +773,8 @@ private static void showPlan() {
   }
   private static void imprt() {
     System.out.print("Podaj ścieżkę do pliku importu przepisów: ");
-    String recipesFile = scanner.nextLine();
-
-    Command importRecipes = new ImportRecipesCommand(appState.getRecipeManager(), recipesFile);
-    appState.getCommandController().executeCommand(importRecipes);
-
-    System.out.print("Podaj ścieżkę do pliku importu składników: ");
     String ingredientsFile = scanner.nextLine();
+    IngredientRepository.clear();
 
     try (BufferedReader reader = new BufferedReader(new FileReader(ingredientsFile))) {
       String line;
@@ -809,7 +804,12 @@ private static void showPlan() {
       }
       System.out.println("Składniki zaimportowane z: " + ingredientsFile);
     } catch (Exception e) {
-      System.out.println("Błąd przy imporcie składników: " + e.getMessage());
+        System.out.println("Błąd przy imporcie składników: " + e.getMessage());
     }
+    System.out.print("Podaj ścieżkę do pliku importu składników: ");
+    String recipesFile = scanner.nextLine();
+
+    Command importRecipes = new ImportRecipesCommand(appState.getRecipeManager(), recipesFile);
+    appState.getCommandController().executeCommand(importRecipes);
   }
 }
