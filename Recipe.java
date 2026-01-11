@@ -5,7 +5,7 @@ import java.util.Map;
 
 interface IRecipe{
 
-  void addIngredient(Ingredient ingredient, int amount);
+  void addIngredient(Ingredient ingredient, Float amount);
   void removeIngredient(Ingredient ingredient);
   void recalculateNutrition();
   String getName();
@@ -14,13 +14,13 @@ interface IRecipe{
   float getTotalFat();
   float getTotalCarbs();
   int getServings();
-  Map<Ingredient, Integer> getIngredients();
+  Map<Ingredient, Float> getIngredients();
 }
 
 public class Recipe implements IRecipe{
   
   private String name;
-  private Map<Ingredient, Integer> ingredients;
+  private Map<Ingredient, Float> ingredients;
   private int servings;
   private int totalCalories;
   private float totalProtein;
@@ -35,7 +35,7 @@ public class Recipe implements IRecipe{
   }
 
   @Override
-  public void addIngredient(Ingredient ingredient, int amount){
+  public void addIngredient(Ingredient ingredient, Float amount){
     ingredients.put(ingredient, amount);
     recalculateNutrition();
   }
@@ -53,9 +53,9 @@ public class Recipe implements IRecipe{
     totalFat = 0;
     totalCarbs = 0;
 
-    for(Map.Entry<Ingredient, Integer> entry : ingredients.entrySet()){
+    for(Map.Entry<Ingredient, Float> entry : ingredients.entrySet()){
       Ingredient ingredient = entry.getKey();
-      int amount = entry.getValue();
+      Float amount = entry.getValue();
 
       totalCalories += ingredient.getCalories() * amount;
       totalProtein += ingredient.getProtein() * amount;
@@ -91,14 +91,14 @@ public class Recipe implements IRecipe{
 
 ///////////////////////// Ksawier tycał
   @Override
-  public Map<Ingredient, Integer> getIngredients() {
+  public Map<Ingredient, Float> getIngredients() {
     return Collections.unmodifiableMap(ingredients);
   }
 ///////////////////////////
 
   public static class RecipeBuilder{
     private String name;
-    private Map<Ingredient, Integer> ingredients = new HashMap<>();
+    private Map<Ingredient, Float> ingredients = new HashMap<>();
     private int servings = 1;
 
     public RecipeBuilder setName(String name){
@@ -106,7 +106,7 @@ public class Recipe implements IRecipe{
       return this;
     }
 
-    public RecipeBuilder addIngredient(Ingredient ingredient, int amount){
+    public RecipeBuilder addIngredient(Ingredient ingredient, Float amount){
       ingredients.put(ingredient, amount);
       return this;
     }
@@ -130,7 +130,7 @@ abstract class RecipeDecorator implements IRecipe{
   }
 
   @Override
-  public void addIngredient(Ingredient ingredient, int amount){
+  public void addIngredient(Ingredient ingredient, Float amount){
     wrappedRecipe.addIngredient(ingredient, amount);
   }
 
@@ -162,9 +162,8 @@ abstract class RecipeDecorator implements IRecipe{
   @Override
   public int getServings() {return wrappedRecipe.getServings();}
 
-/////////////////////////////// Ksawier tycał
   @Override
-  public Map<Ingredient, Integer> getIngredients() {
+  public Map<Ingredient, Float> getIngredients() {
     return wrappedRecipe.getIngredients();
   }
 ///////////////////////////////

@@ -36,7 +36,7 @@ class RecipeManager
         System.out.println("Deleted recipe: " + recipe);
     }
 
-    public void importRecipes(String filePath)
+    public void importRecipes(String filePath, List<Ingredient> IngredientRepository)
     {
         recipes.clear();
 
@@ -56,16 +56,19 @@ class RecipeManager
                 
                 if (parts.length > 2 && !parts[2].isEmpty())
                 {
-                    String[] ingredients = parts[2].split("\\|");
+                    String[] ingredients = parts[2].split("!");
 
                     for (String ing : ingredients)
                     {
                         String[] ingParts = ing.split(",");
 
                         String ingName = ingParts[0];
-                        int amount = Integer.parseInt(ingParts[1]);
+                        float amount = Float.parseFloat(ingParts[1]);
 
-                        Ingredient ingredient = IngredientRepository.get(ingName);
+                        Ingredient ingredient = IngredientRepository.stream()
+                                                    .filter(i -> i.getName().equals(ingName))
+                                                    .findFirst()
+                                                    .orElse(null); 
 
                         if (ingredient != null)
                         {
@@ -100,11 +103,11 @@ class RecipeManager
                     boolean first = true;
                     for (var entry : concreteRecipe.getIngredients().entrySet())
                     {
-                        if (!first) sb.append("|");
+                        if (!first) sb.append("!");
                         first = false;
 
                         Ingredient ing = entry.getKey();
-                        int amount = entry.getValue();
+                        float amount = entry.getValue();
 
                         sb.append(ing.getName())
                             .append(",")
@@ -211,16 +214,18 @@ class ImportRecipesCommand implements Command
 {
     private final RecipeManager recipeManager;
     private final String file;
-
-    public ImportRecipesCommand(RecipeManager recipeManager, String file)
+    private final List<Ingredient> IngredientRepository;
+    
+    public ImportRecipesCommand(RecipeManager recipeManager, String file, List<Ingredient> IngredientRepository)
     {
         this.recipeManager = recipeManager;
         this.file = file;
+        this.IngredientRepository = IngredientRepository;
     }
 
     public void execute()
     {
-        recipeManager.importRecipes(file);
+        recipeManager.importRecipes(file, IngredientRepository);
     }
 
     public void undo()

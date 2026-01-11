@@ -40,9 +40,9 @@ class ShoppingListObserver implements Observer{
         for (Meal meal : dayPlan.getMeals().values()) {
             IRecipe recipe = meal.getRecipe();
 
-            for (Map.Entry<Ingredient, Integer> entry : recipe.getIngredients().entrySet()) {
+            for (Map.Entry<Ingredient, Float> entry : recipe.getIngredients().entrySet()) {
                 Ingredient currentIngridient = entry.getKey();
-                int amount = entry.getValue();
+                int amount = Math.round(entry.getValue());
                 
                 String name = currentIngridient.getName();
 

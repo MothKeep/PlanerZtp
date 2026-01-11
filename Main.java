@@ -85,8 +85,6 @@ public class Main{
   private static final Scanner scanner = new Scanner(System.in);
 
   public static void main(String[] args){
-    Command importRecipes = new ImportRecipesCommand(appState.getRecipeManager(), "ball_Recipe");
-    appState.getCommandController().executeCommand(importRecipes);
     IngredientRepository.clear();
     try (BufferedReader reader = new BufferedReader(new FileReader("ball_Ingredient"))) {
       String line;
@@ -116,6 +114,9 @@ public class Main{
     } catch (Exception e) {
       System.out.println("Błąd przy imporcie składników: " + e.getMessage());
     }
+    
+    Command importRecipes = new ImportRecipesCommand(appState.getRecipeManager(), "ball_Recipe", appState.getIngredients());
+    appState.getCommandController().executeCommand(importRecipes);
 
     boolean running = true;
   
@@ -293,7 +294,7 @@ public class Main{
       if (index >= 0 && index < appState.getIngredients().size()) {
         Ingredient ingredient = appState.getIngredients().get(index);
         System.out.print("Podaj ilość: ");
-        int amount = scanner.nextInt();
+        float amount = scanner.nextFloat();
         scanner.nextLine();
         builder.addIngredient(ingredient, amount);
       } else {
@@ -401,7 +402,7 @@ public class Main{
       .setName(newName)
       .setServings(oldRecipe.getServings());
 
-    for (Map.Entry<Ingredient, Integer> entry : oldRecipe.getIngredients().entrySet()) {
+    for (Map.Entry<Ingredient, Float> entry : oldRecipe.getIngredients().entrySet()) {
       builder.addIngredient(entry.getKey(), entry.getValue());
     }
 
@@ -446,9 +447,9 @@ public class Main{
           }
           Ingredient selectedIngredient = ingredients.get(ingNum - 1);
           System.out.println("Podaj ilość składnika:");
-          int amount;
+          float amount;
           try {
-            amount = Integer.parseInt(scanner.nextLine());
+            amount = Float.parseFloat(scanner.nextLine());
           } catch (Exception e) {
             System.out.println("Niepoprawna ilość.");
             continue;
@@ -478,7 +479,7 @@ public class Main{
             continue;
           }
           Ingredient toRemove = currentIngredients.get(delNum - 1);
-          Map<Ingredient, Integer> ingMap = new HashMap<>(builder.build().getIngredients());
+          Map<Ingredient, Float> ingMap = new HashMap<>(builder.build().getIngredients());
           ingMap.remove(toRemove);
           builder = new Recipe.RecipeBuilder()
             .setName(builder.build().getName())
@@ -687,13 +688,13 @@ public class Main{
           IRecipe recipe = meal.getRecipe();
           int servings = recipe.getServings();
 
-          for (Map.Entry<Ingredient, Integer> entry : recipe.getIngredients().entrySet()) {
+          for (Map.Entry<Ingredient, Float> entry : recipe.getIngredients().entrySet()) {
             Ingredient ingredient = entry.getKey();
-            int amount = entry.getValue() * servings;
+            float amount = entry.getValue() * servings;
 
             shoppingList
               .computeIfAbsent(ingredient.getType(), k -> new HashMap<>())
-              .merge(ingredient.getName(), amount, Integer::sum);
+              .merge(ingredient.getName(), (int) amount, Integer::sum);
           }
         }
       }
@@ -809,7 +810,7 @@ private static void showPlan() {
     System.out.print("Podaj ścieżkę do pliku importu składników: ");
     String recipesFile = scanner.nextLine();
 
-    Command importRecipes = new ImportRecipesCommand(appState.getRecipeManager(), recipesFile);
+    Command importRecipes = new ImportRecipesCommand(appState.getRecipeManager(), recipesFile, appState.getIngredients());
     appState.getCommandController().executeCommand(importRecipes);
   }
 }
