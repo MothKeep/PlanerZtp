@@ -671,61 +671,61 @@ public class Main{
     appState.getMealPlan().addComponent(newDay);
     System.out.println("Plan skopiowany na " + targetDate);
   }
-
-  private static void showShoppingList() {
+private static void showShoppingList() {
     MealPlan mealPlan = appState.getMealPlan();
 
     if (mealPlan.getComponents().isEmpty()) {
-      System.out.println("Plan posiłków jest pusty.");
-      return;
+        System.out.println("Plan posiłków jest pusty.");
+        return;
     }
 
-    Map<IngredientType, Map<String, Integer>> shoppingList = new HashMap<>();
+    Map<IngredientType, Map<String, Float>> shoppingList = new HashMap<>();
 
     for (MealComponent component : mealPlan.getComponents()) {
-      if (component instanceof DayPlan dayPlan) {
-        for (Meal meal : dayPlan.getMeals().values()) {
-          IRecipe recipe = meal.getRecipe();
-          int servings = recipe.getServings();
+        if (component instanceof DayPlan dayPlan) {
+            for (Meal meal : dayPlan.getMeals().values()) {
+                IRecipe recipe = meal.getRecipe();
+                int servings = recipe.getServings();
 
-          for (Map.Entry<Ingredient, Float> entry : recipe.getIngredients().entrySet()) {
-            Ingredient ingredient = entry.getKey();
-            float amount = entry.getValue() * servings;
+                for (Map.Entry<Ingredient, Float> entry : recipe.getIngredients().entrySet()) {
+                    Ingredient ingredient = entry.getKey();
+                    float amount = entry.getValue() * servings;
 
-            shoppingList
-              .computeIfAbsent(ingredient.getType(), k -> new HashMap<>())
-              .merge(ingredient.getName(), (int) amount, Integer::sum);
-          }
+                    shoppingList
+                        .computeIfAbsent(ingredient.getType(), k -> new HashMap<>())
+                        .merge(ingredient.getName(), amount, (oldVal, newVal) -> oldVal + newVal);
+                }
+            }
         }
-      }
     }
+
     if (shoppingList.isEmpty()) {
-      System.out.println("Brak składników w planie.");
-      return;
+        System.out.println("Brak składników w planie.");
+        return;
     }
 
     System.out.println("\nLista zakupów dla całego planu:");
 
     for (IngredientType type : IngredientType.values()) {
-      Map<String, Integer> items = shoppingList.get(type);
-      if (items != null && !items.isEmpty()) {
-        String typeName;
-        switch (type) {
-          case DAIRY: typeName = "Nabiał"; break;
-          case VEGETABLE: typeName = "Warzywa"; break;
-          case FRUIT: typeName = "Owoce"; break;
-          case MEAT: typeName = "Mięso"; break;
-          case GRAIN: typeName = "Zbożowe"; break;
-          case OTHER: typeName = "Inne"; break;
-          default: typeName = "Inne"; break;
-        }
-        System.out.println(typeName + ":");
+        Map<String, Float> items = shoppingList.get(type);
+        if (items != null && !items.isEmpty()) {
+            String typeName;
+            switch (type) {
+                case DAIRY: typeName = "Nabiał"; break;
+                case VEGETABLE: typeName = "Warzywa"; break;
+                case FRUIT: typeName = "Owoce"; break;
+                case MEAT: typeName = "Mięso"; break;
+                case GRAIN: typeName = "Zbożowe"; break;
+                default: typeName = "Inne"; break;
+            }
+            System.out.println(typeName + ":");
 
-        items.forEach((name, amount) -> System.out.println("- " + name + ": " + amount));
-        System.out.println();
-      }
+            items.forEach((name, amount) -> System.out.println("- " + name + ": " + (int) Math.ceil(amount)));
+            System.out.println();
+        }
     }
-  }
+}
+
 private static void showPlan() {
     MealPlan mealPlan = appState.getMealPlan();
     List<MealComponent> components = mealPlan.getComponents();
