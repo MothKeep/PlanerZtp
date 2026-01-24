@@ -49,6 +49,7 @@ class Meal{
         break;
       case SNACK:
         typ = "Przekąska";
+        break;
       case SUPPER:
         typ = "Kolacja";
         break;
